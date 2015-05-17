@@ -1,5 +1,6 @@
 ﻿using OddEra.Bdd.AcceptanceTests.Personas;
 using OddEra.Bdd.Framework;
+using System;
 using TechTalk.SpecFlow;
 
 namespace OddEra.Bdd.AcceptanceTests.StepDefinitions.Base
@@ -8,18 +9,16 @@ namespace OddEra.Bdd.AcceptanceTests.StepDefinitions.Base
     {
         public StepDefinitionBase()
         {
-            PersonaFactory.AddPersonaType(typeof(David));
-            PersonaFactory.AddPersonaType(typeof(John));
+            AppDomain.CurrentDomain.DomainUnload += (object sender, EventArgs e) => CloseBrowser();
         }
 
         public void SetCurrentPersona(string personaName)
         {
-            ScenarioContext.Current.Add("User", (ExampleAppUserBase)PersonaFactory.Create(personaName));
+            ScenarioContext.Current.Add("User", (ExampleAppUserBase)PersonaContext.GetUser(personaName));
         }
 
         protected static ExampleAppUserBase User { get { return ScenarioContext.Current.Get<ExampleAppUserBase>("User"); } }
 
-        [AfterFeature]
         public static void CloseBrowser()
         {
             User.CloseBrowser();
