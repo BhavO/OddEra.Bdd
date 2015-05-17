@@ -5,6 +5,6 @@
         FireFox,
         InternetExplorer,
         Chrome,
-        PhantomJS // Headless/GUI-less browser
+        PhantomJS
     }
 }
