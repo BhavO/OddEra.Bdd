@@ -9,7 +9,7 @@ namespace OddEra.Bdd.AcceptanceTests.StepDefinitions.Base
     {
         public StepDefinitionBase()
         {
-            AppDomain.CurrentDomain.DomainUnload += (object sender, EventArgs e) => CloseBrowser();
+            AppDomain.CurrentDomain.DomainUnload += (object sender, EventArgs e) => CloseBrowsers();
         }
 
         public void SetCurrentPersona(string personaName)
@@ -19,9 +19,9 @@ namespace OddEra.Bdd.AcceptanceTests.StepDefinitions.Base
 
         protected static ExampleAppUserBase User { get { return ScenarioContext.Current.Get<ExampleAppUserBase>("User"); } }
 
-        public static void CloseBrowser()
+        public static void CloseBrowsers()
         {
-            User.CloseBrowser();
+            PersonaContext.CloseBrowsers();
         }
     }
 }
