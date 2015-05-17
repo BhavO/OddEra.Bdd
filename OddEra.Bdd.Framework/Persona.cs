@@ -6,13 +6,16 @@ namespace OddEra.Bdd.Framework
 {
     public abstract class Persona
     {
-        protected IWebDriver driver;
+        private IWebDriver driver;
 
         protected PageBase currentPage;
 
-        protected Persona()
+        protected IWebDriver Driver
         {
-            driver = DriverFactory.GetDriver();
+            get
+            {
+                return driver ?? (driver = DriverFactory.GetDriver());
+            }
         }
 
         public virtual T OnPage<T>() where T : PageBase, new()
@@ -24,7 +27,7 @@ namespace OddEra.Bdd.Framework
 
             if (!(basePage is T))
             {
-                currentPage = new T { Driver = driver };
+                currentPage = new T();
                 currentPage.SetAsCurrentPageForUser(this);
             }
 
@@ -33,18 +36,24 @@ namespace OddEra.Bdd.Framework
                 throw new InvalidOperationException("Type specified is not current page");
             }
 
+            currentPage.Driver = Driver;
+
             return (T)currentPage;
         }
 
         public void SetCurrentPage(PageBase page)
         {
             this.currentPage = page;
-            this.currentPage.Driver = driver;
+            this.currentPage.Driver = Driver;
         }
 
         public virtual void CloseBrowser()
         {
-            driver.Close();
+            if (Driver != null)
+            {
+                Driver.Quit();
+                driver = null;
+            }
         }
     }
 }

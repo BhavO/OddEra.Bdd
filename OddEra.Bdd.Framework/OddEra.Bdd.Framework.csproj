@@ -54,7 +54,6 @@
     <Compile Include="PageBase.cs" />
     <Compile Include="Persona.cs" />
     <Compile Include="PersonaContext.cs" />
-    <Compile Include="PersonaFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

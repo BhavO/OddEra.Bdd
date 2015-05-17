@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -7,14 +8,13 @@ namespace OddEra.Bdd.Framework
 {
     public static class PersonaContext
     {
-        private static ArrayList Users = new ArrayList();
+        private static IList<Persona> Users = new List<Persona>();
 
-        public static T GetUser<T>() where T : class, new()
+        public static T GetUser<T>() where T : Persona, new()
         {
-            var users = Users;
             T userToReturn = default(T);
 
-            foreach (var item in users)
+            foreach (var item in Users)
             {
                 if (item is T)
                 {
@@ -25,7 +25,7 @@ namespace OddEra.Bdd.Framework
             if (userToReturn == null)
             {
                 userToReturn = new T();
-                users.Add(userToReturn);
+                Users.Add(userToReturn);
             }
 
             return (T)userToReturn;
@@ -33,14 +33,13 @@ namespace OddEra.Bdd.Framework
 
         public static Persona GetUser(string personaType)
         {
-            var users = Users;
             Persona userToReturn = null;
 
-            foreach (var user in users)
+            foreach (var user in Users)
             {
                 if (user.GetType().Name.ToLower().Contains(personaType.ToLower()))
                 {
-                    userToReturn = user as Persona;
+                    userToReturn = user;
                 }
             }
 
@@ -48,10 +47,18 @@ namespace OddEra.Bdd.Framework
             {
                 var userType = Assembly.GetExecutingAssembly().GetTypes().First(i => i.Name == personaType);
                 userToReturn = (Persona)Activator.CreateInstance(userType, null, null);
-                users.Add(userToReturn);
+                Users.Add(userToReturn);
             }
 
             return (Persona)userToReturn;
+        }
+
+        public static void CloseBrowsers()
+        {
+            foreach (var user in Users)
+            {
+                user.CloseBrowser();
+            }        
         }
     }
 }
